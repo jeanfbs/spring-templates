@@ -1,0 +1,65 @@
+
+
+<!-- ############################################################ -->
+<!-- EXEMPLO DE FRONT END PARA ENVIAR O UPLOAD DE ARQUIVO COM JSON-->
+<!-- ############################################################ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Upload Mock</title>
+	<link rel="stylesheet" href="">
+
+</head>
+<body>
+	
+	<form id="form" enctype="multipart/form-data">
+	  <input type="file" id="arquivo" name="arquivo">
+	  <button type="button">Enviar</button>
+	</form>
+
+
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+
+   <script>
+
+   $(document).ready(function(){
+
+   		$("button").on("click",function(){
+
+   			formData = new FormData();
+
+			formData.append("file", $('#arquivo')[0].files[0]);
+			formData.append('json', new Blob([JSON.stringify({
+                "name": "root",
+                "password": "root"                    
+            })], {
+                type: "application/json"
+            }));
+
+			// for (var pair of formData.entries()) {
+			//     console.log(pair[0]+ ', ' + pair[1]); 
+			// }
+
+				$.ajax({
+			  method: "POST",
+			  url: "http://localhost:8080/insideUp/upload",
+			  data: formData,
+			  processData: false,  // tell jQuery not to process the data
+       		  contentType: false,  // tell jQuery not to set contentType
+			}).done(function( msg ) {
+			    console.log(msg);
+			});
+
+   		});
+
+   });
+
+  </script>
+
+</body>
+</html>
