@@ -27,6 +27,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner, InitializingBean{
@@ -55,11 +56,11 @@ public class Application implements CommandLineRunner, InitializingBean{
     	if(Objects.isNull(user)){
     		throw new Exception("O objeto usuário não pode ser nulo!");
     	}
-    	StringBuilder query = new StringBuilder();
-    	query.append(" INSERT INTO usuario (NOME, LOGIN, SENHA) VALUES(:nome, :login, :senha) ");
-    	NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+    	
+    	SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate.getDataSource());
     	SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(user);
-    	namedParameterJdbcTemplate.update(query.toString(), namedParameters);
+    	insert.setTableName("usuario");
+    	insert.execute(namedParameters);
     }
     
     
@@ -68,6 +69,7 @@ public class Application implements CommandLineRunner, InitializingBean{
     	if(id > 0){
     		StringBuilder query = new StringBuilder();
         	query.append(" DELETE FROM usuario WHERE ID = ? ");
+        	
         	jdbcTemplate.update(query.toString(),id);
     	}
     }
